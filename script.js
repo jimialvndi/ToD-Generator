@@ -311,10 +311,11 @@ const dareTasks = [
 ];
 
 let selectedOption = null;
+const sound1 = document.getElementById("gregetanSound");
 
 // Enable the generate button when an option is selected
 document.querySelectorAll('input[name="truthDare"]').forEach((input) => {
-    input.addEventListener('change', function() {
+    input.addEventListener('change', function () {
         selectedOption = this.value;
         document.getElementById("generateButton").disabled = false;
     });
@@ -324,11 +325,40 @@ function generateTask() {
     if (!selectedOption) return;
 
     const taskArray = selectedOption === "Truth" ? truthTasks : dareTasks;
-    const randomTask = taskArray[Math.floor(Math.random() * taskArray.length)];
+    const animationContainer = document.getElementById("animationContainer");
+    const animationText = document.getElementById("animationText");
+    const popup = document.getElementById("popup");
+    const popupContent = document.getElementById("popupContent");
 
-    // Display the result in the popup
-    document.getElementById("popupContent").innerHTML = `<strong class="text-2xl">${selectedOption}:</strong> </br> ${randomTask}`;
-    document.getElementById("popup").classList.remove("hidden");  // Show the popup
+    // Play sound
+    sound1.currentTime = 0; // Reset sound to the beginning
+    sound1.play();
+
+    let interval;
+    let count = 0;
+
+    // Show the animation container
+    animationContainer.classList.remove("hidden");
+
+    // Start the animation
+    interval = setInterval(() => {
+        const randomTask = taskArray[Math.floor(Math.random() * taskArray.length)];
+        animationText.textContent = randomTask;
+        count++;
+    }, 100);
+
+    // Stop the animation after 2 seconds and show the result
+    setTimeout(() => {
+        clearInterval(interval); // Stop the interval
+        animationContainer.classList.add("hidden"); // Hide animation container
+
+        const randomTask = taskArray[Math.floor(Math.random() * taskArray.length)];
+        popupContent.innerHTML = `<strong class="text-2xl">${selectedOption}:</strong><br>${randomTask}`;
+        // sound1.pause(); // Stop sound when animation finishes
+        // sound1.currentTime = 0;
+        popup.classList.remove("hidden"); // Show the popup
+    }, 5800);
+
 
     // Disable the generate button after generating
     document.getElementById("generateButton").disabled = true;
